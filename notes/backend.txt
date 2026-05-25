@@ -1,0 +1,3 @@
+- .env changes don't make nodemon to start the server.
+- api path length has nearly zero impact on the computational cost.
+- api name with "/api/v1" helps to distinguish the api with other endpoints and versioning helps to build upgraded version without completing disturbing the stable version. 

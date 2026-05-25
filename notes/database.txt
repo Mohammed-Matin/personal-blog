@@ -1,0 +1,4 @@
+- SQL suggests using "snake_case" for identifiers.
+- Serverless means that you don’t manage servers at all, and the database automatically scales, pauses, and resumes based on usage.
+- Connection pooling is a pattern of creating a pool of available connections (usually TCP) and allow multiple clients to share the same pool of connections. This pattern is usually used when connection establishment and tearing down is costly, and the server has a limited number of connections. 
+- SSL(Secure Socket Layer) encrypts the communication between server and client.
