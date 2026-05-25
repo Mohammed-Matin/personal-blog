@@ -20,6 +20,14 @@ app.get("/", (req, res) => {
   res.send("Hi! You lazy ass.");
 });
 
+
+/**
+ * [HEALTH] - Check the health of the server
+ */
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok", message: "Server is healthy and running." });
+});
+
 /**
  * Articles endpoint
  */

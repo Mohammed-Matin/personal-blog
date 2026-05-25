@@ -4,17 +4,12 @@ import ArticleCard from "../components/ArticleCard.jsx";
 import ArticleCardSkeleton from "../components/ArticleCardSkeleton.jsx";
 import ArticleFilters from "../components/ArticleFilters.jsx";
 import ArticleFormModal from "../components/ArticleFormModal.jsx";
+import ArticleViewModal from "../components/ArticleViewModal.jsx";
 import ConfirmDialog from "../components/ConfirmDialog.jsx";
 import Pagination from "../components/Pagination.jsx";
 import ToastStack from "../components/ToastStack.jsx";
-import ArticleViewModal from "../components/ArticleViewModal.jsx";
 import { useArticles } from "../hooks/useArticles.js";
-import { tagOptions, truncateText } from "../utils/articles.js";
-
-const emptyCreateForm = {
-  tag: "technical",
-  content: "",
-};
+import { truncateText } from "../utils/articles.js";
 
 const ArticlesDashboardPage = () => {
   const {
@@ -24,14 +19,11 @@ const ArticlesDashboardPage = () => {
     filters,
     setFilters,
     loading,
-    error,
     totalPages,
     refetch,
     setArticles,
   } = useArticles();
 
-  const [createForm, setCreateForm] = useState(emptyCreateForm);
-  const [saving, setSaving] = useState(false);
   const [modalState, setModalState] = useState({
     open: false,
     mode: "create",
@@ -40,8 +32,10 @@ const ArticlesDashboardPage = () => {
   const [deleteState, setDeleteState] = useState({
     open: false,
     article: null,
+    loading: false,
   });
   const [selectedArticle, setSelectedArticle] = useState(null);
+  const [saving, setSaving] = useState(false);
   const [toasts, setToasts] = useState([]);
 
   const totalLabel = useMemo(() => {
@@ -49,7 +43,7 @@ const ArticlesDashboardPage = () => {
       return "Loading articles...";
     }
 
-    return `${articles.length} article${articles.length === 1 ? "" : "s"} on this page`;
+    return `${articles.length} article${articles.length === 1 ? "" : "s"}`;
   }, [articles.length, loading]);
 
   const pushToast = (type, title, message = "") => {
@@ -61,38 +55,8 @@ const ArticlesDashboardPage = () => {
     }, 3000);
   };
 
-  const handleCreate = async (event) => {
-    event.preventDefault();
-
-    if (!createForm.content.trim()) {
-      pushToast(
-        "error",
-        "Content required",
-        "Please write article content before submitting.",
-      );
-      return;
-    }
-
-    setSaving(true);
-
-    try {
-      await articlesApi.createArticle(createForm);
-      setCreateForm(emptyCreateForm);
-      pushToast(
-        "success",
-        "Article created",
-        "The new article has been saved.",
-      );
-      refetch();
-    } catch (requestError) {
-      pushToast(
-        "error",
-        "Create failed",
-        requestError?.response?.data?.message || "Could not create article.",
-      );
-    } finally {
-      setSaving(false);
-    }
+  const openCreateModal = () => {
+    setModalState({ open: true, mode: "create", article: null });
   };
 
   const openEditModal = (article) => {
@@ -150,7 +114,7 @@ const ArticlesDashboardPage = () => {
   };
 
   const handleDelete = (article) => {
-    setDeleteState({ open: true, article });
+    setDeleteState({ open: true, article, loading: false });
   };
 
   const confirmDelete = async () => {
@@ -195,157 +159,87 @@ const ArticlesDashboardPage = () => {
   const hasArticles = articles.length > 0;
 
   return (
-    <main className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+    <main className="mx-auto w-full max-w-6xl px-3 py-6 transition-colors duration-300 sm:px-6 sm:py-8 lg:px-8">
       <ToastStack toasts={toasts} />
 
-      <section className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
-        <div className="rounded-4xl border border-slate-200 bg-white p-6 shadow-sm">
-          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500">
-            Article overview
-          </p>
-          <h2 className="mt-3 text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
-            Manage articles with a clean dashboard
-          </h2>
-          <p className="mt-4 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base">
-            Create, filter, update, and delete articles from one focused
-            workspace. The UI is built to stay simple, responsive, and fast.
-          </p>
-        </div>
-
-        <div className="rounded-4xl border border-slate-200 bg-slate-950 p-6 text-white shadow-sm">
-          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-300">
-            Status
-          </p>
-          <div className="mt-4 space-y-3 text-sm text-slate-300">
-            <p>{totalLabel}</p>
-            <p>{error ? error : "Connected to the articles API."}</p>
-            <p>
-              Supported tags:{" "}
-              {tagOptions.filter((tag) => tag !== "all").join(", ")}.
-            </p>
-          </div>
-        </div>
+      <section className="mx-auto max-w-3xl text-center">
+        <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400">
+          Articles dashboard
+        </p>
+        <h2 className="mt-3 text-2xl font-semibold tracking-tight text-slate-900 sm:text-4xl lg:text-5xl dark:text-slate-50">
+          “We shape our words, then our words shape us.”
+        </h2>
+        <p className="mx-auto mt-4 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base dark:text-slate-300">
+          Articles are small records of thought, and thought is never still. Use
+          this space to collect them, refine them, and let the archive stay
+          readable at a glance.
+        </p>
       </section>
 
-      <div className="mt-6 grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
-        <section className="rounded-4xl border border-slate-200 bg-white p-6 shadow-sm">
-          <div className="flex items-center justify-between gap-4">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500">
-                Create article
-              </p>
-              <h3 className="mt-2 text-2xl font-semibold text-slate-900">
-                New entry
-              </h3>
-            </div>
+      <section className="mx-auto mt-8 max-w-5xl space-y-4">
+        <div className="flex flex-col gap-4 rounded-4xl border border-slate-200 bg-white p-4 shadow-sm transition-colors duration-300 dark:border-slate-800 dark:bg-slate-900 sm:p-5 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400">
+              Article controls
+            </p>
+            <h3 className="mt-2 text-xl font-semibold text-slate-900 dark:text-slate-50 sm:text-2xl">
+              Manage articles
+            </h3>
+            <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
+              {totalLabel}
+            </p>
           </div>
 
-          <form className="mt-6 space-y-4" onSubmit={handleCreate}>
-            <label className="block text-sm font-medium text-slate-700">
-              Tag
-              <select
-                value={createForm.tag}
-                onChange={(event) =>
-                  setCreateForm((current) => ({
-                    ...current,
-                    tag: event.target.value,
-                  }))
-                }
-                className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm shadow-sm outline-none transition focus:border-slate-400 focus:ring-4 focus:ring-slate-100"
-              >
-                {tagOptions
-                  .filter((tag) => tag !== "all")
-                  .map((tag) => (
-                    <option key={tag} value={tag}>
-                      {tag}
-                    </option>
-                  ))}
-              </select>
-            </label>
+          <button
+            type="button"
+            onClick={openCreateModal}
+            className="inline-flex w-full items-center justify-center rounded-2xl bg-slate-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-slate-700 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-white sm:w-auto"
+          >
+            Create article
+          </button>
+        </div>
 
-            <label className="block text-sm font-medium text-slate-700">
-              Content
-              <textarea
-                rows="8"
-                value={createForm.content}
-                onChange={(event) =>
-                  setCreateForm((current) => ({
-                    ...current,
-                    content: event.target.value,
-                  }))
-                }
-                placeholder="Write article content..."
-                className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm leading-6 shadow-sm outline-none transition focus:border-slate-400 focus:ring-4 focus:ring-slate-100"
+        <ArticleFilters
+          filters={filters}
+          onChange={handleFilterChange}
+          onReset={handleResetFilters}
+        />
+      </section>
+
+      <section className="mx-auto mt-8 max-w-5xl rounded-4xl border border-slate-200 bg-white p-4 shadow-sm transition-colors duration-300 dark:border-slate-800 dark:bg-slate-900 sm:p-6">
+        {loading ? (
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            {Array.from({ length: 6 }).map((_, index) => (
+              <ArticleCardSkeleton key={index} />
+            ))}
+          </div>
+        ) : hasArticles ? (
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            {articles.map((article) => (
+              <ArticleCard
+                key={article.id}
+                article={article}
+                onOpen={openViewArticle}
               />
-            </label>
+            ))}
+          </div>
+        ) : (
+          <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-6 py-16 text-center text-sm text-slate-600">
+            No articles found. Try changing filters or create a new article.
+          </div>
+        )}
 
-            <button
-              type="submit"
-              disabled={saving}
-              className="inline-flex w-full items-center justify-center rounded-2xl bg-slate-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {saving ? "Saving..." : "Create article"}
-            </button>
-          </form>
-        </section>
-
-        <section className="space-y-6">
-          <ArticleFilters
-            filters={filters}
-            onChange={handleFilterChange}
-            onReset={handleResetFilters}
+        <div className="mt-6">
+          <Pagination
+            page={page}
+            totalPages={totalPages}
+            onPrev={() => setPage((current) => Math.max(1, current - 1))}
+            onNext={() =>
+              setPage((current) => Math.min(totalPages, current + 1))
+            }
           />
-
-          <div className="rounded-4xl border border-slate-200 bg-white p-6 shadow-sm">
-            <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500">
-                  Articles list
-                </p>
-                <h3 className="mt-2 text-2xl font-semibold text-slate-900">
-                  Latest articles
-                </h3>
-              </div>
-              <p className="text-sm text-slate-500">{totalLabel}</p>
-            </div>
-
-            {loading ? (
-              <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-                {Array.from({ length: 6 }).map((_, index) => (
-                  <ArticleCardSkeleton key={index} />
-                ))}
-              </div>
-            ) : hasArticles ? (
-              <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-                {articles.map((article) => (
-                  <ArticleCard
-                    key={article.id}
-                    article={article}
-                    onView={openViewArticle}
-                    onEdit={openEditModal}
-                    onDelete={handleDelete}
-                  />
-                ))}
-              </div>
-            ) : (
-              <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-6 py-16 text-center text-sm text-slate-600">
-                No articles found. Try changing filters or create a new article.
-              </div>
-            )}
-
-            <div className="mt-6">
-              <Pagination
-                page={page}
-                totalPages={totalPages}
-                onPrev={() => setPage((current) => Math.max(1, current - 1))}
-                onNext={() =>
-                  setPage((current) => Math.min(totalPages, current + 1))
-                }
-              />
-            </div>
-          </div>
-        </section>
-      </div>
+        </div>
+      </section>
 
       <ArticleFormModal
         isOpen={modalState.open}
@@ -364,7 +258,9 @@ const ArticlesDashboardPage = () => {
         description={`This will permanently remove: ${truncateText(deleteState.article?.content || "", 100)}`}
         confirmLabel="Delete article"
         onConfirm={confirmDelete}
-        onCancel={() => setDeleteState({ open: false, article: null })}
+        onCancel={() =>
+          setDeleteState({ open: false, article: null, loading: false })
+        }
         loading={deleteState.loading}
       />
 
@@ -375,6 +271,10 @@ const ArticlesDashboardPage = () => {
         onEdit={(article) => {
           setSelectedArticle(null);
           openEditModal(article);
+        }}
+        onDelete={(article) => {
+          setSelectedArticle(null);
+          handleDelete(article);
         }}
       />
     </main>
