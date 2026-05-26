@@ -13,8 +13,8 @@ const ArticleViewModal = ({ isOpen, article, onClose, onEdit, onDelete }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 px-4 backdrop-blur-sm">
-      <div className="w-full max-w-2xl rounded-4xl border border-slate-200 bg-white p-6 shadow-2xl transition-colors duration-300 dark:border-slate-800 dark:bg-slate-900">
-        <div className="flex items-start justify-between gap-4">
+      <div className="w-full max-w-2xl rounded-4xl border border-slate-200 bg-white p-6 shadow-2xl transition-colors duration-300 dark:border-slate-800 dark:bg-slate-900 overflow-hidden flex flex-col max-h-[90vh]">
+        <div className="flex items-start justify-between gap-4 shrink-0">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400">
               Article detail
@@ -26,13 +26,13 @@ const ArticleViewModal = ({ isOpen, article, onClose, onEdit, onDelete }) => {
           <button
             type="button"
             onClick={onClose}
-            className="rounded-full border border-slate-200 px-3 py-1 text-sm text-slate-600 transition hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
+            className="rounded-full border border-slate-200 px-3 py-1 text-sm text-slate-600 transition hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800 shrink-0"
           >
             Close
           </button>
         </div>
 
-        <div className="mt-6 space-y-5">
+        <div className="mt-6 space-y-5 overflow-y-auto min-h-0">
           <div className="flex flex-wrap items-center gap-3">
             <span
               className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide ring-1 ${tagStyles[tag] || tagStyles.all}`}
@@ -45,12 +45,12 @@ const ArticleViewModal = ({ isOpen, article, onClose, onEdit, onDelete }) => {
           </div>
 
           <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5 sm:p-6 dark:border-slate-700 dark:bg-slate-950">
-            <p className="whitespace-pre-wrap text-base leading-8 text-slate-700 sm:text-lg dark:text-slate-200">
+            <p className="whitespace-pre-wrap text-base leading-8 text-slate-700 sm:text-lg dark:text-slate-200 break-words" style={{wordBreak: "break-word"}}>
               {truncateText(article.content, 2000)}
             </p>
           </div>
 
-          <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+          <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end shrink-0 pt-2">
             <button
               type="button"
               onClick={onClose}

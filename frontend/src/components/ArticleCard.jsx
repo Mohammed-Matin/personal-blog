@@ -25,14 +25,15 @@ const ArticleCard = ({ article, onOpen }) => {
         </span>
       </div>
 
-      <div className="mt-5 flex-1 space-y-4">
+      <div className="mt-5 flex-1 space-y-4 min-w-0">
         <p
-          className="text-base leading-8 text-slate-800 dark:text-slate-200 sm:text-[1.05rem]"
+          className="text-base leading-8 text-slate-800 dark:text-slate-200 sm:text-[1.05rem] break-words"
           style={{
             display: "-webkit-box",
             WebkitLineClamp: 5,
             WebkitBoxOrient: "vertical",
             overflow: "hidden",
+            wordBreak: "break-word"
           }}
         >
           {preview}
