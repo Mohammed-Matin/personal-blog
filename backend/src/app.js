@@ -5,7 +5,7 @@ import config from "./config/config.config.js";
 
 const app = express();
 
-const allowedOrigin = config.frontend_url | "https://mindword.onrender.com/";
+const allowedOrigin = config.frontend_url;
 
 app.use(
   cors({
