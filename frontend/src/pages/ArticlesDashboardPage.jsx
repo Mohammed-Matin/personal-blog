@@ -163,13 +163,13 @@ const ArticlesDashboardPage = () => {
       <ToastStack toasts={toasts} />
 
       <section className="mx-auto max-w-3xl text-center">
-        <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400">
+        <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400 break-words">
           Articles dashboard
         </p>
-        <h2 className="mt-3 text-2xl font-semibold tracking-tight text-slate-900 sm:text-4xl lg:text-5xl dark:text-slate-50">
+        <h2 className="mt-3 text-2xl font-semibold tracking-tight text-slate-900 sm:text-4xl lg:text-5xl dark:text-slate-50 break-words" style={{wordBreak: "break-word"}}>
           “We shape our words, then our words shape us.”
         </h2>
-        <p className="mx-auto mt-4 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base dark:text-slate-300">
+        <p className="mx-auto mt-4 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base dark:text-slate-300 break-words">
           Articles are small records of thought, and thought is never still. Use
           this space to collect them, refine them, and let the archive stay
           readable at a glance.
@@ -177,15 +177,15 @@ const ArticlesDashboardPage = () => {
       </section>
 
       <section className="mx-auto mt-8 max-w-5xl space-y-4">
-        <div className="flex flex-col gap-4 rounded-4xl border border-slate-200 bg-white p-4 shadow-sm transition-colors duration-300 dark:border-slate-800 dark:bg-slate-900 sm:p-5 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400">
+        <div className="flex flex-col gap-4 rounded-4xl border border-slate-200 bg-white p-4 shadow-sm transition-colors duration-300 dark:border-slate-800 dark:bg-slate-900 sm:p-5 lg:flex-row lg:items-end lg:justify-between min-w-0">
+          <div className="min-w-0 flex-1">
+            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400 break-words">
               Article controls
             </p>
-            <h3 className="mt-2 text-xl font-semibold text-slate-900 dark:text-slate-50 sm:text-2xl">
+            <h3 className="mt-2 text-xl font-semibold text-slate-900 dark:text-slate-50 sm:text-2xl break-words" style={{wordBreak: "break-word"}}>
               Manage articles
             </h3>
-            <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
+            <p className="mt-2 text-sm text-slate-600 dark:text-slate-300 break-words">
               {totalLabel}
             </p>
           </div>
@@ -193,7 +193,7 @@ const ArticlesDashboardPage = () => {
           <button
             type="button"
             onClick={openCreateModal}
-            className="inline-flex w-full items-center justify-center rounded-2xl bg-slate-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-slate-700 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-white sm:w-auto"
+            className="inline-flex w-full items-center justify-center rounded-2xl bg-slate-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-slate-700 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-white sm:w-auto shrink-0"
           >
             Create article
           </button>
@@ -206,7 +206,7 @@ const ArticlesDashboardPage = () => {
         />
       </section>
 
-      <section className="mx-auto mt-8 max-w-5xl rounded-4xl border border-slate-200 bg-white p-4 shadow-sm transition-colors duration-300 dark:border-slate-800 dark:bg-slate-900 sm:p-6">
+      <section className="mx-auto mt-8 max-w-5xl rounded-4xl border border-slate-200 bg-white p-4 shadow-sm transition-colors duration-300 dark:border-slate-800 dark:bg-slate-900 sm:p-6 min-w-0">
         {loading ? (
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             {Array.from({ length: 6 }).map((_, index) => (
@@ -224,7 +224,7 @@ const ArticlesDashboardPage = () => {
             ))}
           </div>
         ) : (
-          <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-6 py-16 text-center text-sm text-slate-600">
+          <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-6 py-16 text-center text-sm text-slate-600 break-words">
             No articles found. Try changing filters or create a new article.
           </div>
         )}
